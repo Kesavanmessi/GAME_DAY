@@ -22,6 +22,8 @@ app.use("/api/auth", require("./src/routes/authRoutes"));
 app.use("/api/leagues", require("./src/routes/leagueRoutes"));
 app.use("/api/users", require("./src/routes/userRoutes"));
 app.use("/api/admin", require("./src/routes/adminRoutes"));
+app.use("/api/matches", require("./src/routes/matchRoutes"));
+
 
 // Connect DB + Start Server
 const PORT = process.env.PORT || 5000;

@@ -1,17 +1,19 @@
-// backend/src/routes/userRoutes.js
-
 const router = require("express").Router();
 const authMiddleware = require("../middleware/authMiddleware");
-const User = require("../models/User");
+const { addFavorite, removeFavorite, getFavorites } = require("../controllers/favoritesController");
 
-// PROTECTED ROUTE — only logged in users can access
-router.get("/profile", authMiddleware, async (req, res) => {
-  try {
-    const user = req.user;  // injected by middleware
-    res.json({ user });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to load profile" });
-  }
+// Protected profile
+router.get("/profile", authMiddleware, (req, res) => {
+  res.json({ user: req.user });
 });
+
+// Add favorite
+router.post("/favorites/add", authMiddleware, addFavorite);
+
+// Remove favorite
+router.post("/favorites/remove", authMiddleware, removeFavorite);
+
+// Get all favorites
+router.get("/favorites", authMiddleware, getFavorites);
 
 module.exports = router;
