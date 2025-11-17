@@ -1,11 +1,32 @@
+// backend/src/routes/leagueRoutes.js
 const router = require("express").Router();
+const Team = require("../models/Team");
 
+const LEAGUES = [
+  { id: "PL", name: "Premier League", country: "England" },
+  { id: "PD", name: "La Liga", country: "Spain" },
+  { id: "BL1", name: "Bundesliga", country: "Germany" },
+  { id: "SA", name: "Serie A", country: "Italy" },
+  { id: "FL1", name: "Ligue 1", country: "France" },
+];
+
+// GET all leagues
 router.get("/", (req, res) => {
-  res.send("All leagues route");
+  res.json(LEAGUES);
 });
 
-router.get("/:leagueId/clubs", (req, res) => {
-  res.send("Clubs in league route");
+// GET clubs in a specific league
+router.get("/:leagueId/clubs", async (req, res) => {
+  try {
+    const { leagueId } = req.params;
+
+    const teams = await Team.find({ leagueId });
+
+    return res.json(teams);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch teams" });
+  }
 });
 
 module.exports = router;
