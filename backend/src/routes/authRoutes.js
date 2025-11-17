@@ -1,11 +1,12 @@
+// backend/src/routes/authRoutes.js
+
 const router = require("express").Router();
+const { signup, login } = require("../controllers/authController");
 
-router.post("/signup", (req, res) => {
-  res.send("Signup route");
-});
+// Signup route
+router.post("/signup", signup);
 
-router.post("/login", (req, res) => {
-  res.send("Login route");
-});
+// Login route
+router.post("/login", login);
 
 module.exports = router;
