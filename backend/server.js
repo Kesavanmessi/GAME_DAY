@@ -24,6 +24,9 @@ app.use("/api/users", require("./src/routes/userRoutes"));
 app.use("/api/admin", require("./src/routes/adminRoutes"));
 app.use("/api/matches", require("./src/routes/matchRoutes"));
 app.use("/api/reminders", require("./src/routes/reminderRoutes"));
+app.use("/api/friends", require("./src/routes/friendRoutes"));
+app.use("/api/private", require("./src/routes/privateAccessRoutes"));
+
 
 
 

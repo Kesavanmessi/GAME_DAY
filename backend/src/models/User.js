@@ -66,6 +66,19 @@ const UserSchema = new mongoose.Schema(
         },
       },
     ],
+   privateAccessRequests: [
+  {
+    requesterId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    status: { type: String, enum: ["pending", "accepted"], default: "pending" }
+  }
+],
+
+approvedPrivateViewers: [
+  {
+    viewerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+  }
+],
+
   },
 
   { timestamps: true }
