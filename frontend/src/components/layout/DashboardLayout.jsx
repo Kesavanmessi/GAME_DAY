@@ -14,6 +14,13 @@ export default function DashboardLayout({ children }) {
           <Link className="block p-2 hover:bg-slate-800 rounded-lg" to="/friends">Friends</Link>
           <Link className="block p-2 hover:bg-slate-800 rounded-lg" to="/reminders">Reminders</Link>
           <Link className="block p-2 hover:bg-slate-800 rounded-lg" to="/ai">Ask AI</Link>
+          <Link className="block p-2 hover:bg-slate-800 rounded-lg" to="/favorites/my">
+  My Favorite Teams
+</Link>
+<Link className="block p-2 hover:bg-slate-800 rounded-lg" to="/friends">
+  Friends
+</Link>
+
         </nav>
       </aside>
 
