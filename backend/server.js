@@ -28,6 +28,7 @@ app.use("/api/friends", require("./src/routes/friendRoutes"));
 app.use("/api/private", require("./src/routes/privateAccessRoutes"));
 app.use("/api/ai", require("./src/routes/aiRoutes"));
 app.use("/api/watch", require("./src/routes/watchRoutes"));
+app.use("/api/access", require("./src/routes/accessRoutes"));
 
 
 

@@ -11,6 +11,8 @@ import FriendProfile from "./pages/FriendProfile";
 import TeamDetails from "./pages/TeamDetails";
 import Profile from "./pages/Profile";
 import BottomNav from "./components/layout/BottomNav";
+import SplashScreen from "./components/SplashScreen";
+
 
 
 function App() {
