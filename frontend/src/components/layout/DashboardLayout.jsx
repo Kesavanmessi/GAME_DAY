@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex">
+    <div className="min-h-screen bg-slate-950 text-white flex pb-20 md:pb-0">
 
       {/* LEFT SIDEBAR */}
       <aside className="w-60 bg-slate-900 border-r border-slate-800 p-5 hidden md:block">
@@ -20,7 +20,9 @@ export default function DashboardLayout({ children }) {
 <Link className="block p-2 hover:bg-slate-800 rounded-lg" to="/friends">
   Friends
 </Link>
-
+<Link className="block p-2 hover:bg-slate-800 rounded-lg" to="/profile">
+  Profile Settings
+</Link>
         </nav>
       </aside>
 

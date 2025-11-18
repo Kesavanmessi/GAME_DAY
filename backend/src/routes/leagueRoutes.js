@@ -29,4 +29,18 @@ router.get("/:leagueId/clubs", async (req, res) => {
   }
 });
 
+exports.getTeamById = async (req, res) => {
+  const { teamId } = req.params;
+
+  const team = await Team.findOne({ teamId: parseInt(teamId) });
+
+  if (!team) return res.status(404).json({ message: "Team not found" });
+
+  res.json({ team });
+};
+
+
+router.get("/team/:teamId", getTeamById);
+
+
 module.exports = router;

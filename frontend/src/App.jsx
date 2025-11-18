@@ -8,6 +8,10 @@ import LeagueTeams from "./pages/LeagueTeams";
 import MyFavorites from "./pages/MyFavorites";
 import Friends from "./pages/Friends";
 import FriendProfile from "./pages/FriendProfile";
+import TeamDetails from "./pages/TeamDetails";
+import Profile from "./pages/Profile";
+import BottomNav from "./components/layout/BottomNav";
+
 
 function App() {
   return (
@@ -23,7 +27,11 @@ function App() {
         <Route path="/favorites/my" element={<MyFavorites />} />
         <Route path="/friends" element={<Friends />} />
 <Route path="/friends/:friendId" element={<FriendProfile />} />
+<Route path="/team/:teamId" element={<TeamDetails />} />
+<Route path="/profile" element={<Profile />} />
       </BrowserRouter>
+    <AiChatButton />
+    <BottomNav />
     </AuthProvider>
   );
 }
