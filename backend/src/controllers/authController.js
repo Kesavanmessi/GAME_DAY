@@ -1,91 +1,60 @@
 const User = require("../models/User");
-const bcrypt = require("bcryptjs");
 const generateToken = require("../utils/jwt");
+const { OAuth2Client } = require("google-auth-library");
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // --------------------------
-// SIGNUP CONTROLLER
+// GOOGLE LOGIN CONTROLLER
 // --------------------------
-exports.signup = async (req, res) => {
+exports.googleLogin = async (req, res) => {
   try {
-    const { name, email, password, location, timezone } = req.body;
+    const { token } = req.body;
 
-    // Validate required fields
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!token) {
+      return res.status(400).json({ message: "Google token is required" });
     }
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already registered" });
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create new user
-    const newUser = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      location: location || null,
-      timezone: timezone || "Asia/Kolkata",
+    // Verify Google Token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
 
-    // Generate JWT
-    const token = generateToken(newUser._id);
+    const payload = ticket.getPayload();
+    const { email, name, picture, sub: googleId } = payload;
 
-    res.status(201).json({
-      message: "Signup successful",
-      token,
-      user: {
-        id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        location: newUser.location,
-        timezone: newUser.timezone,
-      },
-    });
-  } catch (error) {
-    console.error("Signup Error:", error);
-    res.status(500).json({ message: "Server error during signup" });
-  }
-};
+    // Find or Create User
+    let user = await User.findOne({ email });
 
-// --------------------------
-// LOGIN CONTROLLER
-// --------------------------
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Validate input
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email & password required" });
-    }
-
-    // Check user exists
-    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      user = await User.create({
+        name,
+        email,
+        googleId,
+        picture,
+        location: null,
+        timezone: "Asia/Kolkata",
+      });
+    } else {
+      // Update existing user info if needed
+      if (!user.googleId) user.googleId = googleId;
+      if (!user.picture) user.picture = picture;
+      await user.save();
     }
 
-    // Compare password with hash
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid email or password" });
-    }
-
-    // Generate token
-    const token = generateToken(user._id);
+    const jwtToken = generateToken(user._id);
 
     res.json({
       message: "Login successful",
-      token,
+      token: jwtToken,
+      requiresUsername: !user.username,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
+        username: user.username,
+        picture: user.picture,
         location: user.location,
         timezone: user.timezone,
         publicFavorites: user.publicFavorites,
@@ -95,7 +64,7 @@ exports.login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Login Error:", error);
-    res.status(500).json({ message: "Server error during login" });
+    console.error("Google Login Error:", error);
+    res.status(500).json({ message: "Server error during Google login" });
   }
 };

@@ -78,14 +78,91 @@ exports.getFavorites = async (req, res) => {
   try {
     const user = req.user;
 
+    // Collect all team IDs
+    const allTeamIds = [
+      ...user.publicFavorites.map(f => f.teamId),
+      ...user.privateFavorites.map(f => f.teamId),
+      ...user.veryFavoriteTeams.map(f => f.teamId)
+    ];
+
+    // Fetch team details
+    const teams = await Team.find({ teamId: { $in: allTeamIds } });
+    const teamMap = {};
+    teams.forEach(t => teamMap[t.teamId] = t);
+
+    const LEAGUES = {
+      PL: "Premier League",
+      PD: "La Liga",
+      BL1: "Bundesliga",
+      SA: "Serie A",
+      FL1: "Ligue 1"
+    };
+
+    // Helper to enrich favorite objects
+    const enrich = (favList, type) => favList.map(f => {
+      const team = teamMap[f.teamId];
+      return {
+        teamId: f.teamId,
+        leagueId: f.leagueId,
+        leagueName: LEAGUES[f.leagueId] || f.leagueId,
+        name: team ? team.name : "Unknown Team",
+        crest: team ? team.crest : "",
+        shortName: team ? team.shortName : "",
+        type, // Add type for frontend convenience
+        reminderSettings: f.reminderSettings // Pass settings so frontend knows status
+      };
+    });
+
     res.json({
-      public: user.publicFavorites,
-      private: user.privateFavorites,
-      very: user.veryFavoriteTeams
+      public: enrich(user.publicFavorites, "public"),
+      private: enrich(user.privateFavorites, "private"),
+      very: enrich(user.veryFavoriteTeams, "very")
     });
 
   } catch (error) {
     console.error("Get Favorites Error:", error);
     res.status(500).json({ message: "Server error fetching favorites" });
+  }
+};
+
+
+// -----------------------------
+// UPDATE TEAM REMINDER SETTINGS
+// -----------------------------
+exports.updateTeamSettings = async (req, res) => {
+  try {
+    const { teamId, reminderSettings } = req.body;
+    const user = req.user;
+
+    // Helper to update settings in a list
+    const updateInList = (list) => {
+      const idx = list.findIndex(t => t.teamId === parseInt(teamId));
+      if (idx !== -1) {
+        list[idx].reminderSettings = reminderSettings;
+        return true;
+      }
+      return false;
+    };
+
+    // Try finding and updating in all lists
+    const updatedPublic = updateInList(user.publicFavorites);
+    const updatedPrivate = updateInList(user.privateFavorites);
+    const updatedVery = updateInList(user.veryFavoriteTeams);
+
+    if (!updatedPublic && !updatedPrivate && !updatedVery) {
+      return res.status(404).json({ message: "Team not found in favorites" });
+    }
+
+    await user.save();
+
+    // Regenerate reminders for this user
+    const { regenerateReminders } = require('./reminderController');
+    await regenerateReminders(user._id);
+
+    res.json({ message: "Team settings updated" });
+
+  } catch (error) {
+    console.error("Update Team Settings Error:", error);
+    res.status(500).json({ message: "Server error updating settings" });
   }
 };

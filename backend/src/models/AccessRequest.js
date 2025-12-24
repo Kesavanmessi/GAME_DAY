@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const { mongoose } = require("../db");
+
 
 const AccessRequestSchema = new mongoose.Schema(
   {

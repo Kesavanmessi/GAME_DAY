@@ -2,10 +2,10 @@
 
 const router = require("express").Router();
 const authMiddleware = require("../middleware/authMiddleware");
-const { 
-  addReminder, 
-  removeReminder, 
-  getMyReminders 
+const {
+  addReminder,
+  removeReminder,
+  getMyReminders
 } = require("../controllers/reminderController");
 
 // Add reminder
@@ -16,5 +16,8 @@ router.post("/remove", authMiddleware, removeReminder);
 
 // Get all reminders for logged-in user
 router.get("/", authMiddleware, getMyReminders);
+
+// Update team-specific settings
+router.post("/team-settings", authMiddleware, require("../controllers/favoritesController").updateTeamSettings);
 
 module.exports = router;

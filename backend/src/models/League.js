@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const { mongoose } = require("../db");
+
 
 const LeagueSchema = new mongoose.Schema({
   leagueId: { type: String, required: true, unique: true }, // PL, PD, BL1, SA, FL1

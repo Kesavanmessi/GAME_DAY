@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title= `${subject}`
+    style
+      include style.css
+  body
+    .email-container
+      .header
+        h1 GameDay
+      .content
+        block content
+      .footer
+        p This email was sent by GameDay. Please do not reply to this email.
+        p © #{new Date().getFullYear()} GameDay. All rights reserved.

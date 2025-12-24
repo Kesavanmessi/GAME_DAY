@@ -1,0 +1,14 @@
+extends base
+
+block content
+  p Hi #{firstName},
+  p Just a friendly reminder about an upcoming match in your favorites:
+  .match-details
+    h3 #{matchDetails.team1} vs #{matchDetails.team2}
+    p.league #{matchDetails.league}
+    p.date-time #{matchDetails.date} at #{matchDetails.time}
+    p.venue #{matchDetails.venue}
+  a.button(href=`${url}`) View Match Details
+  p Set a reminder or invite friends to join you!
+  p Cheers,
+  p The GameDay Team

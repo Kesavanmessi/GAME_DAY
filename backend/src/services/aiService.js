@@ -5,10 +5,15 @@ const User = require("../models/User");
 
 // Simple watch provider mapping (seed). You can expand later or move to DB.
 const WATCH_PROVIDERS = {
-  IN: { name: "India", providers: ["JioCinema", "SonyLIV", "Star Sports"] },
-  US: { name: "USA", providers: ["ESPN+", "Peacock", "fuboTV"] },
-  GB: { name: "UK", providers: ["Sky Sports", "BT Sport"] },
-  Default: { name: "Global", providers: ["YouTube/Official Broadcaster"] }
+  IN: { name: "India", providers: ["JioCinema", "SonyLIV", "Star Sports", "FanCode"] },
+  US: { name: "USA", providers: ["ESPN+", "Peacock", "fuboTV", "Paramount+", "Apple TV"] },
+  GB: { name: "UK", providers: ["Sky Sports", "BT Sport", "Amazon Prime Video", "BBC iPlayer"] },
+  ES: { name: "Spain", providers: ["DAZN", "Movistar+", "Orange TV"] },
+  DE: { name: "Germany", providers: ["DAZN", "Sky Deutschland", "Amazon Prime Video"] },
+  FR: { name: "France", providers: ["Canal+", "Amazon Prime Video", "beIN Sports"] },
+  IT: { name: "Italy", providers: ["DAZN", "Sky Italia"] },
+  BR: { name: "Brazil", providers: ["Globo", "ESPN", "Star+", "Premiere"] },
+  Default: { name: "Global", providers: ["YouTube/Official Broadcaster", "FIFA+"] }
 };
 
 // Helper: find team by fuzzy name (case-insensitive contains in name, shortName, tla)

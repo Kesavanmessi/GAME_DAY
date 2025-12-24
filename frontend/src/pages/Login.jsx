@@ -1,83 +1,46 @@
-import { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import API from "../api/api";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import { AuthContext } from "../context/AuthContext";
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [error, setError] = useState("");
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const submit = async (e) => {
-    e.preventDefault();
-    setError("");
-
+  const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await API.post("/auth/login", form);
-
-      login(res.data.user, res.data.token);
+      await login(credentialResponse.credential);
+      toast.success("Successfully logged in!");
       navigate("/");
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Login failed. Please try again.");
     }
   };
 
+  const handleGoogleError = () => {
+    toast.error("Google Login Failed");
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-900 to-black text-white px-4">
-      <div className="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/20">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-gray-900 to-gray-800 text-white px-4 py-12">
+      <div className="w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/10 text-center">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-blue-400 mb-2">Welcome Back</h1>
+          <p className="text-gray-400">Sign in to your GameDay account</p>
+        </div>
 
-        <h1 className="text-3xl font-bold text-center mb-6 text-blue-400">
-          Welcome Back
-        </h1>
-
-        {error && (
-          <p className="text-red-400 text-center mb-4">{error}</p>
-        )}
-
-        <form onSubmit={submit} className="space-y-4">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            onChange={handleChange}
-            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-blue-400"
-            required
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            theme="filled_black"
+            size="large"
+            shape="pill"
+            width="300"
           />
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            onChange={handleChange}
-            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-blue-400"
-            required
-          />
-
-          <button
-            type="submit"
-            className="w-full p-3 rounded-lg bg-blue-500 hover:bg-blue-600 transition font-semibold"
-          >
-            Log In
-          </button>
-        </form>
-
-        <p className="text-center mt-4 text-gray-300">
-          Don’t have an account?
-          <Link to="/register" className="text-blue-400 ml-1 underline">
-            Register
-          </Link>
-        </p>
-
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const { mongoose } = require("../db");
+
 
 const MatchSchema = new mongoose.Schema({
   matchId: Number,

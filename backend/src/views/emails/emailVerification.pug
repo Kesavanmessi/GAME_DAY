@@ -1,0 +1,12 @@
+extends base
+
+block content
+  p Hi #{firstName},
+  p Thank you for signing up for GameDay! To complete your registration, please verify your email address by clicking the button below:
+  a.button(href=`${url}`) Verify Email
+  p If you didn't create an account with us, please ignore this email.
+  p This link is valid for 24 hours.
+  p If the button doesn't work, copy and paste this link into your browser:
+  p #{url}
+  p Cheers,
+  p The GameDay Team

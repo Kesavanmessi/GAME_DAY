@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const { mongoose } = require("../db");
 
 const TeamSchema = new mongoose.Schema({
   teamId: { type: Number, required: true },

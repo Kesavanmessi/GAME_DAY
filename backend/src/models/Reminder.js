@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const { mongoose } = require("../db");
+
 
 const ReminderSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -10,6 +11,13 @@ const ReminderSchema = new mongoose.Schema({
 
   // Has reminder been sent or not
   sent: { type: Boolean, default: false },
+  deliveryMethod: {
+  type: String,
+  enum: ["email", "push"],
+  default: "push"
+},
+// also optionally:
+origin: { type: String, enum: ['auto','user'], default: 'user' }
 
 }, { timestamps: true });
 
